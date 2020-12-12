@@ -61,6 +61,12 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/harlib-1.1.1.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>
