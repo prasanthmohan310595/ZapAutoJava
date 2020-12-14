@@ -1,8 +1,9 @@
 package com.ZAPDriverUtils;
 
 import java.io.*;
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 public class Init {
     public static String BASEURL = null;
@@ -13,33 +14,23 @@ public class Init {
     public static String DAEMON = null;
 
     public void initialise() throws IOException, InterruptedException {
-        Properties prop = readPropertiesFile(System.getProperty("user.dir")+File.separator+"src"+File.separator+"test"+File.separator+"resources"+File.separator+"environments.properties");
-        BASEURL=prop.getProperty("BASEURL");
-        USERNAME=prop.getProperty("USERNAME");
-        PASSWORD=prop.getProperty("PASSWORD");
-        HOST=prop.getProperty("HOST");
-        PORT=prop.getProperty("PORT");
-        DAEMON=prop.getProperty("DAEMON","false");
+        Properties prop = readPropertiesFile(System.getProperty("user.dir") + File.separator + "src" + File.separator + "test" + File.separator + "resources" + File.separator + "environments.properties");
+        BASEURL = prop.getProperty("BASEURL");
+        USERNAME = prop.getProperty("USERNAME");
+        PASSWORD = prop.getProperty("PASSWORD");
+        HOST = prop.getProperty("HOST");
+        PORT = prop.getProperty("PORT");
+        DAEMON = prop.getProperty("DAEMON", "false");
 
-        String libDirectory = System.getProperty("user.dir") + File.separator + "ZAP_2.9.0" + File.separator;
-        String command;
-        if(Boolean.parseBoolean(DAEMON)) {
-            command = "java -Xmx512m -jar "
-                    + libDirectory +
-                    "zap-2.9.0.jar" +
-                    " -daemon" +
-                    " -host " + HOST +
-                    " -port " + PORT;
+        String batFileDirectory = System.getProperty("user.dir") + File.separator + "ZAP_2.9.0"+File.separator;
+        String isDaemon;
+        if (Boolean.parseBoolean(DAEMON)) {
+            isDaemon = "-daemon";
+        } else {
+            isDaemon = null;
         }
-        else{
-            command = "java -Xmx512m -jar "
-                    + libDirectory +
-                    "zap-2.9.0.jar" +
-                    " -host " + HOST +
-                    " -port " + PORT;
-        }
-        System.out.println(command);
-        runCommand("cmd", "/C", command);
+        System.out.println(isDaemon);
+        runCommand(isDaemon,batFileDirectory);
     }
 
     public static Properties readPropertiesFile(String fileName) throws IOException {
@@ -49,7 +40,7 @@ public class Init {
             fis = new FileInputStream(fileName);
             prop = new Properties();
             prop.load(fis);
-        } catch(IOException io) {
+        } catch (IOException io) {
             io.printStackTrace();
         } finally {
             assert fis != null;
@@ -58,17 +49,26 @@ public class Init {
         return prop;
     }
 
-    public void runCommand(String... command) {
-        ProcessBuilder processBuilder = new ProcessBuilder().command(command);
+    public void runCommand(String isDaemon, String directory) {
+        ProcessBuilder processBuilder = new ProcessBuilder().command(Arrays.asList(directory+"zap.bat",directory,isDaemon));
 
         try {
             //Start the process using ProcessBuilder
-            processBuilder.start();
+            processBuilder.inheritIO();
+            Process p = processBuilder.start();
 
-        } catch (IOException e) {
+//            Process p = Runtime.getRuntime().exec(command);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    p.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            p.waitFor(30, TimeUnit.SECONDS);
+        } catch (IOException | InterruptedException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
-            System.out.println("INFO-->ZAP STARTUP FAILED");
         }
-            System.out.println("INFO-->ZAP STARTED SUCCESSFULLY");
     }
 }

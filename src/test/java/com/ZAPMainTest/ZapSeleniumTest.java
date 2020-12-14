@@ -30,8 +30,6 @@ public class ZapSeleniumTest extends Init {
      * Provide details about ZAP Proxy
      */
     static Logger log = Logger.getLogger(ZapSeleniumTest.class.getName());
-    public final String ZAP_PROXYHOST = "localhost";
-    public final int ZAP_PROXYPORT = 8095;
     public final String API_KEY = null;
 
     //Chrome driver path
@@ -66,10 +64,10 @@ public class ZapSeleniumTest extends Init {
     int currentScanID;
 
     // Create ZAP proxy by specifying proxy host and proxy port
-    private Proxy createZapProxyConfiguration() {
+    private Proxy createZapProxyConfiguration(String HOST,int PORT) {
         Proxy proxy = new Proxy();
-        proxy.setHttpProxy(ZAP_PROXYHOST + ":" + ZAP_PROXYPORT);
-        proxy.setSslProxy(ZAP_PROXYHOST + ":" + ZAP_PROXYPORT);
+        proxy.setHttpProxy(HOST + ":" + PORT);
+        proxy.setSslProxy(HOST + ":" + PORT);
         return proxy;
     }
 
@@ -81,15 +79,16 @@ public class ZapSeleniumTest extends Init {
         //Initialise the project parameters
         initialise();
 
-        System.out.println(ZAP_PROXYHOST);
-        System.out.println(ZAP_PROXYPORT);
+        //Initialised variables
+        System.out.println(Init.HOST);
+        System.out.println(Init.PORT);
         System.out.println(Init.BASEURL);
         System.out.println(Init.USERNAME);
         System.out.println(Init.PASSWORD);
         System.out.println(Init.DAEMON);
 
         // Configure ZAP Scanner
-        zapScanner = new ZAProxyScanner(ZAP_PROXYHOST, ZAP_PROXYPORT, API_KEY);
+        zapScanner = new ZAProxyScanner(Init.HOST, Integer.parseInt(Init.PORT), API_KEY);
 
         // Start new session
         zapScanner.clear();
@@ -100,7 +99,7 @@ public class ZapSeleniumTest extends Init {
         log.info("Created client to ZAP API");
 
         // Create driver object
-        driver = DriverBase.createChromeDriver(createZapProxyConfiguration(), BROWSER_DRIVER_PATH);
+        driver = DriverBase.createChromeDriver(createZapProxyConfiguration(Init.HOST, Integer.parseInt(Init.PORT)), BROWSER_DRIVER_PATH);
         siteNavigation = new AttackSmoke(driver);
 
         /*

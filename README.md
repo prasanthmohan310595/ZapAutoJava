@@ -17,10 +17,10 @@ Project Setup:
 This article tries to explain a maven project setup for a sample test application, which can be built & hosted by anyone, in their localhost, and also skeleton of the project is explained.
 
 We anyhow have some updates :) , on following things
-    ->We are not deploying ZAP API in docker containers, but we are deploying it in daemon mode.
+    ->We are not deploying ZAP API in containers, but we are deploying it in daemon mode using runtime configuration.
     ->The ZAP API startup is different across platforms, but the project is developed only for windows platforms.
     ->But on some experiment around the startup script, both the shell and batch files gives the same output in windows, until we have a powershell installed.
-    ->We have the unpacked cross platform version of ZAP along with this project, which is ZAP_2.9.0, but please make sure that you can deploy APIs using that in your machine.
+    ->We have the unpacked cross platform version of ZAP along with this project, which is ZAP_2.9.0, but please make sure that you can deploy APIs using that in your machine, also i will be updating the latest ZAP version periodically, also if you come across any version issues for ZAP, feel free to update the cross platform version by yourself :).
 
 
 Sample test application link :
@@ -40,10 +40,18 @@ Other links referenced ,
 -> https://www.netjstech.com/2016/10/how-to-run-shell-script-from-java-program.html - Possible ways to run shell scripts
 
 
+INCOMPLETE ACTIVITIES:
+    ->Reporting.
+
 
 FUTURE ADVANCEMENTS PLANNED:
-    ->Deploying docker on containers.
-    ->Cross platform support.
-    ->Declaring the port through which the host should listen ZAP API Client in the runtime.
+Larger implementations :
+    ->Deploying on docker containers.
+    ->TestNGListeners for initialisation & teardown.
+
+Quick implementations:
+
+    ->Cross platform support(Have to update environments.properties & init.java).
+    ->To bring up the port to listen ZAP API in runtime using the PORT property in environments.properties. 
 
 I would be glad to get pull requests from these areas :)
