@@ -40,18 +40,16 @@ Other links referenced ,
 -> https://www.netjstech.com/2016/10/how-to-run-shell-script-from-java-program.html - Possible ways to run shell scripts
 
 
-INCOMPLETE ACTIVITIES:
-    ->Reporting.
-
 
 FUTURE ADVANCEMENTS PLANNED:
-Larger implementations :
+Long term implementations :
     ->Deploying on docker containers.
     ->TestNGListeners for initialisation & teardown.
 
-Quick implementations:
+Quick/Short term implementations:
 
     ->Cross platform support(Have to update environments.properties & init.java).
-    ->To bring up the port to listen ZAP API in runtime using the PORT property in environments.properties. 
+    ->To bring up the port to listen ZAP API in runtime using the PORT property in environments.properties.
+        *As the code is not yet implemented to decide the port in run time, we hav to first open the ZAP tool ourselves and have to set our port manually which the ZAP API should be listened.
 
 I would be glad to get pull requests from these areas :)

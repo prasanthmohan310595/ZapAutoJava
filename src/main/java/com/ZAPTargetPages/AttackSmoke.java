@@ -22,7 +22,7 @@ public class AttackSmoke extends Init {
      */
     public AttackSmoke(WebDriver driver) {
         this.driver = driver;
-        this.driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.SECONDS);
-        this.driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS);
+        this.driver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
+        this.driver.manage().timeouts().implicitlyWait(20,TimeUnit.SECONDS);
     }
 }

@@ -8,13 +8,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.ZAPDriverUtils.Init;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -30,13 +33,9 @@ public class ZapSeleniumTest extends Init {
      * Provide details about ZAP Proxy
      */
     static Logger log = Logger.getLogger(ZapSeleniumTest.class.getName());
-    public final String API_KEY = null;
 
     //Chrome driver path
     private static final String BROWSER_DRIVER_PATH = System.getProperty("user.dir")+File.separator+"drivers"+File.separator+"chromedriver.exe";
-
-    //BAT path
-    private static final String BAT_PATH = System.getProperty("user.dir")+File.separator+"ZAP_2.9.0"+File.separator+"zap.bat";
 
     //ZAP ATTACK CONFIGURATIONS
     private final static String MEDIUM = "MEDIUM";
@@ -88,7 +87,7 @@ public class ZapSeleniumTest extends Init {
         System.out.println(Init.DAEMON);
 
         // Configure ZAP Scanner
-        zapScanner = new ZAProxyScanner(Init.HOST, Integer.parseInt(Init.PORT), API_KEY);
+        zapScanner = new ZAProxyScanner(Init.HOST, Integer.parseInt(Init.PORT), null);
 
         // Start new session
         zapScanner.clear();
@@ -102,6 +101,9 @@ public class ZapSeleniumTest extends Init {
         driver = DriverBase.createChromeDriver(createZapProxyConfiguration(Init.HOST, Integer.parseInt(Init.PORT)), BROWSER_DRIVER_PATH);
         siteNavigation = new AttackSmoke(driver);
 
+        //Clean output folder on start-up
+        refreshOutput();
+
         /*
          * Please have the login function of any application hosted in MX-DEV domain here
          *
@@ -113,7 +115,7 @@ public class ZapSeleniumTest extends Init {
     /*
      * Method to close the driver connection & API Ports of localhost
      */
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void tearDown() throws IOException {
         //Kill the WebDriver instance;
         driver.quit();
@@ -239,8 +241,7 @@ public class ZapSeleniumTest extends Init {
     /*
      * Method to configure spider settings, execute ZAP spider, log the progress and found URLs
      */
-    public void spiderWithZap()
-    {
+    public void spiderWithZap() throws IOException {
         log.info("Spidering started");
 
         // Configure spider settings
@@ -273,13 +274,15 @@ public class ZapSeleniumTest extends Init {
         }
 
         log.info("Spidering ended");
+
+        //Export the report
+        getHtmlReport("SPIDER_SCAN.html");
     }
 
     /*
      * Method to execute an active scan and log the progress
      */
-    public void scanWithZap()
-    {
+    public void scanWithZap() throws IOException {
         log.info("Scanning started");
 
         // Execute the ZAP scanner
@@ -302,16 +305,10 @@ public class ZapSeleniumTest extends Init {
         }
 
         log.info("Scanning ended");
-    }
 
-    /*public byte[] getHtmlReport() throws IOException {
-        byte[] htmlReport = zapScanner.getHtmlReport();
-        Path pathToFile = Paths.get(path);
-        Files.createDirectories(pathToFile.getParent());
-        Files.write(pathToFile, htmlReport);
-        allureService.html(pathToFile.toFile(),"OWASP ZAP Report");
-        return htmlReport;
-    }*/
+        //Export the report
+        getHtmlReport("ACTIVE_SCAN.html");
+    }
 
     /*
     KILL THE PORTS LISTENING ZAP API
@@ -323,16 +320,65 @@ public class ZapSeleniumTest extends Init {
     }
 
     /*
+    THIS FUNCTION REFRESHES THE ARCHIVE DIRECTORY TO HOLD THE REPORTS OF LAST RUN
+    */
+    public void refreshOutput() throws IOException {
+        log.info("Refreshing the archive directory");
+
+        //CREATE A FILE VARIABLE FOR THE REPORT PATH
+        File reportDir = new File(REPORT_PATH);
+
+        //DELETE THE EXISTING ARCHIVED FILES
+        File archiveDir = new File(REPORT_PATH+File.separator+"ARCHIVES"+File.separator);
+        if(archiveDir.exists()){
+            log.info("ARCHIVE DIRECTORY IS ALREADY PRESENT!!");
+            for(File f : Objects.requireNonNull(archiveDir.listFiles())){
+                Assert.assertTrue(f.delete(), "EXISTING REPORT IS NOT DELETED !!");
+            }
+        }
+        //CREATE A NEW ARCHIVE DIRECTORY IF IT DOESN'T EXISTS
+        else{
+            Assert.assertTrue(archiveDir.mkdir(), "ARCHIVE DIRECTORY IS NOT CREATED !!");
+        }
+
+        for(File f : Objects.requireNonNull(reportDir.listFiles())){
+            if(f.getName().endsWith(".html")) {
+                Files.copy(Paths.get(f.getPath()), Paths.get(REPORT_PATH + File.separator + "ARCHIVES" + File.separator + f.getName()),
+                        StandardCopyOption.REPLACE_EXISTING);
+                Assert.assertTrue(f.delete(), "EXISTING TEST REPORT IS NOT DELETED !!");
+            }
+        }
+    }
+
+    /*
+    THIS FUNCTION WRITES THE REPORT WHICH IS EXPORTED AT THAT INSTANT
+     */
+    public void getHtmlReport(String reportName) throws IOException {
+        //GET THE LATEST HTML REPORT
+        byte[] htmlReport = zapScanner.getHtmlReport();
+
+        //CREATE THE FILE VARIABLE FOR THE REPORT TO BE CREATED
+        Path pathToFile = Paths.get(REPORT_PATH+reportName);
+
+        //SAVE THE LATEST TEST REPORT TO THE OUTPUT DIRECTORY
+        Files.createDirectories(pathToFile.getParent());
+        Files.write(pathToFile, htmlReport);
+    }
+
+
+    /*
      * Test method containing test steps and
      * log the found alerts and assert the count of alerts
      */
     @Test
-    public void testVulnerabilitiesAfterLogin()
-    {
+    public void testVulnerabilitiesAfterLogin() throws IOException {
          /*
          Update this below line with the smoke use case used in any of your projects for crawling across
          Have the smoke test template created in AttackSmoke class
          */
+
+        //Export the report
+        getHtmlReport("PASSIVESMOKE_SCAN.html");
 
         // Using ZAP Spider
         log.info("Started spidering");
