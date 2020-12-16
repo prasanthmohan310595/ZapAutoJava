@@ -333,8 +333,11 @@ public class ZapSeleniumTest extends Init {
     public void refreshOutput() throws IOException {
         log.info("Refreshing the archive directory");
 
-        //CREATE A FILE VARIABLE FOR THE REPORT PATH
+        //CREATE THE OUTPUT DIRECTORY FOR THE REPORT
         File reportDir = new File(REPORT_PATH);
+        if(!reportDir.exists()){
+            Assert.assertTrue(reportDir.mkdir(),"TEST OUTPUT FOLDER IS NOT CREATED");
+        }
 
         //DELETE THE EXISTING ARCHIVED FILES
         File archiveDir = new File(REPORT_PATH+File.separator+"ARCHIVES"+File.separator);
