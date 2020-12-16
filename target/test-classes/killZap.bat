@@ -3,3 +3,4 @@ FOR /F "tokens=5" %%P IN ('
     ^| findstr /l /c:"LISTENING" 
     ^| findstr /l /c:%1
 ') DO taskkill /F /PID %%P
+exit

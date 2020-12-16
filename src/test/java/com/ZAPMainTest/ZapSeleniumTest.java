@@ -3,8 +3,10 @@ package com.ZAPMainTest;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -276,7 +278,7 @@ public class ZapSeleniumTest extends Init {
         log.info("Spidering ended");
 
         //Export the report
-        getHtmlReport("SPIDER_SCAN.html");
+        getHtmlReport("SpiderScan.html");
     }
 
     /*
@@ -307,16 +309,22 @@ public class ZapSeleniumTest extends Init {
         log.info("Scanning ended");
 
         //Export the report
-        getHtmlReport("ACTIVE_SCAN.html");
+        getHtmlReport("ActiveScan.html");
     }
 
     /*
     KILL THE PORTS LISTENING ZAP API
      */
     public void killZap(String batPath, String port) throws IOException {
-        Runtime.
+        Process killZap = Runtime.
                 getRuntime().
-                exec("cmd /c "+batPath+" "+port);
+                exec("cmd.exe /C start "+batPath+" "+port);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                killZap.getInputStream()));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
+        }
     }
 
     /*
@@ -378,7 +386,7 @@ public class ZapSeleniumTest extends Init {
          */
 
         //Export the report
-        getHtmlReport("PASSIVESMOKE_SCAN.html");
+        getHtmlReport("PassiveSmoke.html");
 
         // Using ZAP Spider
         log.info("Started spidering");
