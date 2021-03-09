@@ -3,5 +3,8 @@ if exist "%USERPROFILE%\OWASP ZAP\.ZAP_JVM.properties" (
 ) else (
 	set jvmopts=-Xmx512m
 )
-
-java %jvmopts% -jar %1zap-2.9.0.jar %2
+set widget=%3
+set widget
+set widget=%widget:"=%
+set widget
+java %jvmopts% -jar %1zap-2.9.0.jar %2 %widget%
