@@ -50,7 +50,7 @@ public class Init {
     }
 
     public void runCommand(String isDaemon, String directory) {
-        ProcessBuilder processBuilder = new ProcessBuilder().command(Arrays.asList(directory+"zap.bat",directory,isDaemon));
+        ProcessBuilder processBuilder = new ProcessBuilder().command(Arrays.asList(directory+"zap.bat",directory,isDaemon, "-port " +PORT));
 
         try {
             //Start the process using ProcessBuilder
