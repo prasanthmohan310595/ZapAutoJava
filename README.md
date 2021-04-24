@@ -53,4 +53,4 @@ Quick/Short term implementations:
 * To bring up the port to listen ZAP API in runtime using the PORT property in environments.properties.
 * As the code is not yet implemented to decide the port in run time, we hav to first open the ZAP tool ourselves and have to set our port manually which the ZAP API should be listened.
 
-I would be happy to review pull requests from these areas :)
+I would be happy to review pull requests from these areas  :)
