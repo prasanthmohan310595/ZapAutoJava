@@ -389,6 +389,7 @@ public class ZapSeleniumTest extends Init {
          */
 
         //Export the report
+        driver.get(BASEURL);
         getHtmlReport("PassiveSmoke.html");
 
         // Using ZAP Spider
@@ -400,9 +401,9 @@ public class ZapSeleniumTest extends Init {
         setAlert_AttackStrength();
         zapScanner.setEnablePassiveScan(true);
 
-        // Using ZAP Scanner
+        // Using ZAP Policy Scanner
         log.info("Started scanning");
-        scanWithZap();
+//        scanWithZap();
         log.info("Ended scanning");
 
         List<Alert> generatedAlerts = filterAlerts(zapScanner.getAlerts());

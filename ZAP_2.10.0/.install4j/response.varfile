@@ -1,0 +1,6 @@
+# install4j response file for OWASP Zed Attack Proxy 2.10.0
+installationType$Integer=0
+sys.adminRights$Boolean=true
+sys.installationDir=C\:\\Program Files\\OWASP\\Zed Attack Proxy
+sys.languageId=en
+sys.programGroupName=OWASP\\Zed Attack Proxy

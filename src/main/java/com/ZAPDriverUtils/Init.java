@@ -22,7 +22,7 @@ public class Init {
         PORT = prop.getProperty("PORT");
         DAEMON = prop.getProperty("DAEMON", "false");
 
-        String batFileDirectory = System.getProperty("user.dir") + File.separator + "ZAP_2.9.0"+File.separator;
+        String batFileDirectory = System.getProperty("user.dir") + File.separator + "ZAP_2.10.0"+File.separator;
         String isDaemon;
         if (Boolean.parseBoolean(DAEMON)) {
             isDaemon = "-daemon";
