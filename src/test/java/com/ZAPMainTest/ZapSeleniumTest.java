@@ -387,9 +387,9 @@ public class ZapSeleniumTest extends Init {
          Update this below line with the smoke use case used in any of your projects for crawling across
          Have the smoke test template created in AttackSmoke class
          */
+        driver.get(BASEURL);
 
         //Export the report
-        driver.get(BASEURL);
         getHtmlReport("PassiveSmoke.html");
 
         // Using ZAP Spider
@@ -403,7 +403,7 @@ public class ZapSeleniumTest extends Init {
 
         // Using ZAP Policy Scanner
         log.info("Started scanning");
-//        scanWithZap();
+        scanWithZap();
         log.info("Ended scanning");
 
         List<Alert> generatedAlerts = filterAlerts(zapScanner.getAlerts());
