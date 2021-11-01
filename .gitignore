@@ -1,0 +1,8 @@
+# Default ignored files
+.idea/
+.idea/inspectionProfiles/
+target/
+testoutput/
+testoutput/ARCHIVES/
+ZapAuto.iml
+debug.log
